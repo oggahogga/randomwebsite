@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>random website generator</title>
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #eee;
+  }
+  button {
+    background: #4caf50;
+    border: none;
+    padding: 18px 36px;
+    font-size: 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    color: #fff;
+    text-transform: lowercase;
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.5);
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  button:hover {
+    background: #43a047;
+    box-shadow: 0 10px 20px rgba(67, 160, 71, 0.7);
+    transform: translateY(-3px);
+  }
+  button:active {
+    background: #388e3c;
+    box-shadow: 0 4px 8px rgba(56, 142, 60, 0.6);
+    transform: translateY(1px);
+  }
+</style>
+</head>
+<body>
+  <button id="go">random website generator</button>
+
+  <script>
+    const DOMAIN_LIST_URL = 'https://raw.githubusercontent.com/yourusername/yourrepo/main/domains.txt'; // replace with your raw github url
+
+    async function getRandomDomain() {
+      const res = await fetch(DOMAIN_LIST_URL);
+      if (!res.ok) throw new Error('failed to fetch domain list');
+
+      const text = await res.text();
+      const domains = text.split('\n').map(d => d.trim()).filter(Boolean);
+      const randomDomain = domains[Math.floor(Math.random() * domains.length)];
+      return randomDomain;
+    }
+
+    document.getElementById('go').addEventListener('click', async () => {
+      try {
+        document.getElementById('go').disabled = true;
+        document.getElementById('go').textContent = 'loading...';
+        const domain = await getRandomDomain();
+        window.location.href = 'https://' + domain;
+      } catch (e) {
+        alert('error: ' + e.message);
+        document.getElementById('go').disabled = false;
+        document.getElementById('go').textContent = 'random website generator';
+      }
+    });
+  </script>
+</body>
+</html>
